@@ -8,7 +8,7 @@ import org.hibernate.annotations.GeneratorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +19,8 @@ public class Human {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @Version //this check, entity must be persist or merge
+    private Long version;
     private String firstName;
     private String lastName;
     private boolean isActive;
