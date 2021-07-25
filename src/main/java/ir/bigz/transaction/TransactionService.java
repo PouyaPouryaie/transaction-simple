@@ -15,22 +15,22 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-    public Human getHuman(Long id){
+    public Human getHuman(Long id) {
         Optional<Human> byId = transactionRepository.findById(id);
-        if(byId.isPresent()){
+        if (byId.isPresent()) {
             return byId.get();
         }
         throw new IllegalStateException("user not found");
     }
 
-    public Human insertHuman(Human human){
+    public Human insertHuman(Human human) {
         Human save = transactionRepository.save(human);
         System.out.println(save);
         return save;
     }
 
     @Transactional //for update dont need call save method from repository
-    public Human updateHuman(Long id, Human human){
+    public Human updateHuman(Long id, Human human) {
 
         Human humanById = this.getHuman(id);
         System.out.println(humanById.toString());
