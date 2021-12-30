@@ -54,4 +54,19 @@ public class TransactionService {
         }
         throw new Exception("data is not unique");
     }
+
+    /**
+     * this method show how hibernate cache behavior when some data fetch and change it in some another transaction
+     * @param id
+     * @param human
+     * @return
+     */
+    public Human getAndAdd(Long id, Human human){
+
+        Human humanRetrieve = this.getHuman(id);
+        humanRetrieve.setFirstName("changeName");
+
+        return insertHuman(human);
+
+    }
 }

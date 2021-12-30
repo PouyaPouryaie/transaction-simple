@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/transaction")
 @AllArgsConstructor
@@ -42,5 +44,19 @@ public class TransactionController {
         }
 
         return new ResponseEntity<>("update not done", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(path = "getAndAdd/{id}")
+    public ResponseEntity<?> getAndAdd(@PathVariable("id") Long id, @RequestBody Human human){
+        try {
+            Human result = transactionService.getAndAdd(id, human);
+            if(Objects.nonNull(result)){
+                return new ResponseEntity<>(result, HttpStatus.CREATED);
+            }
+        }catch (Exception ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>("insert not done", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
