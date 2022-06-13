@@ -1,16 +1,20 @@
 package ir.bigz.transaction;
 
+import ir.bigz.transaction.hibernate.TransactionalServiceAbs;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class TransactionService {
+public class TransactionService extends TransactionalServiceAbs {
 
     private final TransactionRepository transactionRepository;
 
@@ -29,7 +33,7 @@ public class TransactionService {
         return save;
     }
 
-    @Transactional //for update dont need call save method from repository
+    @Transactional //for update don't need to call save method from repository
     public Human updateHuman(Long id, Human human) {
 
         Human humanById = this.getHuman(id);
@@ -59,7 +63,7 @@ public class TransactionService {
      * this method show how hibernate cache behavior when some data fetch and change it in some another transaction
      * @param id
      * @param human
-     * @return
+     * @return Human
      */
     public Human getAndAdd(Long id, Human human){
 
@@ -68,5 +72,20 @@ public class TransactionService {
 
         return insertHuman(human);
 
+    }
+
+    public List<Human> getHumanByAgeUseCustomRowMapper(Long age){
+
+        String query = "select h.first_name, h.last_name, h.national_code  from human h where h.age = :age";
+
+        return createNativeQuery(query, Human.mapper())
+                .setParameter("age", age)
+                .getResultList();
+    }
+
+    public List<Human> getHumanByAgeUseMapResult(Long age){
+
+        List<Map<String, Object>> humanByAge = transactionRepository.getHumanByAge(age);
+        return humanByAge.stream().map(Human::mapper).collect(Collectors.toList());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -18,6 +19,12 @@ public class TransactionController {
     public ResponseEntity<?> getHuman(@PathVariable("id") Long id){
         Human result = transactionService.getHuman(id);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "byAge/{age}")
+    public ResponseEntity<?> getHumanByAge(@PathVariable("age") Long age){
+        List<Human> result = transactionService.getHumanByAgeUseMapResult(age);
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
     }
 
     @PostMapping(path = "/")
